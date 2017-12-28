@@ -1,0 +1,6 @@
+{
+	"require": {
+		"zomberg/phpquery": "dev-master",
+		"texthtml/php-lock": "dev-master"
+	}
+}
