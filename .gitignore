@@ -1,2 +1,4 @@
 /vendor
+/locks
+/logs
 composer.lock
