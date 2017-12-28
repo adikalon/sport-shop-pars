@@ -13,6 +13,7 @@ class Logger
 	public static function console($message)
 	{
 		echo "[".date('H:i:s')."]: ".mb_convert_encoding($message, 'UTF-8', 'auto')."\n";
+		unset($message);
 	}
 	
 	/**
@@ -27,6 +28,7 @@ class Logger
 			"[".date('H:i:s')."]: ".mb_convert_encoding($message, 'UTF-8', 'auto')."\r\n",
 			FILE_APPEND
 		);
+		unset($message);
 	}
 	
 	/**
@@ -42,5 +44,6 @@ class Logger
 			"[".date('H:i:s')."]: ".mb_convert_encoding($message, 'UTF-8', 'auto')."\r\n",
 			FILE_APPEND
 		);
+		unset($message);
 	}
 }

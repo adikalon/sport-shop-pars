@@ -20,6 +20,7 @@ class Structure
 		if (!$file and (!file_exists($path) or !is_dir($path))) {
 			return self::correction($path, $file);
 		}
+		unset($file);
 		return $path;
 	}
 	

@@ -14,17 +14,51 @@ define('NAME', scriptName());
 define('APP', ROOT.'/app');
 define('LOCKS', ROOT.'/locks');
 define('CLASSES', ROOT.'/classes');
+define('PARSERS', ROOT.'/parsers');
 define('LOGS', ROOT.'/logs');
 define('APP_LOGS', LOGS.'/'.NAME);
 define('COMPOSER', ROOT.'/vendor/autoload.php');
 
-spl_autoload_register(function ($class) {
-	if (!file_exists(CLASSES.'/'.$class.'.class.php') or is_dir(CLASSES.'/'.$class.'.class.php')) {
+
+function includeClasses($class) {
+	if (file_exists(CLASSES.'/'.$class.'.class.php') and !is_dir(CLASSES.'/'.$class.'.class.php')) {
+		require_once(CLASSES.'/'.$class.'.class.php');
+	}
+}
+
+function includeParsers($class) {
+	if (!file_exists(PARSERS.'/'.$class.'.class.php') or is_dir(PARSERS.'/'.$class.'.class.php')) {
 		Logger::send('|ОШИБКА| - Не удалось найти класс - "'.$class.'"');
 		exit();
 	}
-	require_once(CLASSES.'/'.$class.'.class.php');
-});
+	require_once(PARSERS.'/'.$class.'.parser.php');
+}
+
+spl_autoload_register('includeClasses');
+
+$classes = [];
+
+foreach(new DirectoryIterator(CLASSES) as $item) {
+	if (!$item->isDot() and $item->isFile() and $item->getExtension() == 'php') {
+		$classes[] = str_replace('.class', '', $item->getBasename('.php'));
+	}
+	unset($item);
+}
+
+foreach(new DirectoryIterator(PARSERS) as $item) {
+	if (!$item->isDot() and $item->isFile() and $item->getExtension() == 'php') {
+		$parser = str_replace('.parser', '', $item->getBasename('.php'));
+		if (in_array($parser, $classes)) {
+			Logger::send('|ОШИБКА| - Конфликт одинаковых имен классов - "'.$parser.'.parser.php" и "'.$parser.'.class.php"');
+			exit();
+		}
+	}
+	unset($item, $parser);
+}
+
+unset($classes);
+
+spl_autoload_register('includeParsers');
 
 if (!file_exists(COMPOSER) or is_dir(COMPOSER)) {
 	Logger::send('|ОШИБКА| - Не установлены зависимости композера');
