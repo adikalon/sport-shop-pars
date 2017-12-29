@@ -27,8 +27,8 @@ function includeClasses($class) {
 }
 
 function includeParsers($class) {
-	if (!file_exists(PARSERS.'/'.$class.'.class.php') or is_dir(PARSERS.'/'.$class.'.class.php')) {
-		Logger::send('|ОШИБКА| - Не удалось найти класс - "'.$class.'"');
+	if (!file_exists(PARSERS.'/'.$class.'.parser.php') or is_dir(PARSERS.'/'.$class.'.parser.php')) {
+		Logger::send('|ОШИБКА| - Не удалось найти класс - "'.$class.'".');
 		exit();
 	}
 	require_once(PARSERS.'/'.$class.'.parser.php');
@@ -49,7 +49,7 @@ foreach(new DirectoryIterator(PARSERS) as $item) {
 	if (!$item->isDot() and $item->isFile() and $item->getExtension() == 'php') {
 		$parser = str_replace('.parser', '', $item->getBasename('.php'));
 		if (in_array($parser, $classes)) {
-			Logger::send('|ОШИБКА| - Конфликт одинаковых имен классов - "'.$parser.'.parser.php" и "'.$parser.'.class.php"');
+			Logger::send('|ОШИБКА| - Конфликт одинаковых имен классов - "'.$parser.'.parser.php" и "'.$parser.'.class.php".');
 			exit();
 		}
 	}
@@ -61,7 +61,7 @@ unset($classes);
 spl_autoload_register('includeParsers');
 
 if (!file_exists(COMPOSER) or is_dir(COMPOSER)) {
-	Logger::send('|ОШИБКА| - Не установлены зависимости композера');
+	Logger::send('|ОШИБКА| - Не установлены зависимости композера.');
 	exit();
 }
 require_once(COMPOSER);
@@ -71,6 +71,6 @@ $lock = $factory->create(NAME);
 try {
 	$lock->acquire();
 } catch (Exception $ex) {
-	Logger::send('|БЛОК| - Скрипт "'.NAME.'" уже запущен');
+	Logger::send('|БЛОК| - Скрипт "'.NAME.'" уже запущен.');
 	exit();
 }
